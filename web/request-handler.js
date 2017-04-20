@@ -6,15 +6,24 @@ var fs = require('fs');
 
 exports.handleRequest = function (req, res) {
 
-  if (req.method === 'GET' && req.url === '/') {
-      http.serveAssets(res, archive.paths.siteAssets + '/index.html', function(data){
+  var hasUrl = archive.isUrlArchived(req.url);
 
+  if (req.method === 'GET') {
+    if (req.url === '/') {
+      http.serveAssets(res, archive.paths.siteAssets + '/index.html', function(data){
         res.writeHead(200, http.headers);
         res.end(data);
-
       });
-
-
+    } else if (archive.isUrlArchived(req.url)) {
+      http.serveAssets(res, `${archive.paths.archivedSites}/${req.url}`, function(data){
+        res.writeHead(200, http.headers);
+        res.end(data);
+      });
+    } else {
+      // 404
+      res.writeHead(404, http.headers);
+      res.end();
+    }
 
     //res.end(output);
     // serveAssets gets HTML
