@@ -5,6 +5,7 @@ var archive = require('../helpers/archive-helpers');
 var path = require('path');
 var supertest = require('supertest');
 var initialize = require('../web/initialize.js');
+var Promise = require('bluebird');
 
 initialize(path.join(__dirname, '/testdata'));
 
@@ -130,12 +131,12 @@ describe('archive helpers', function() {
       var counter = 0;
       var total = 2;
 
-      archive.isUrlArchived('www.example.com', function (exists) {
+      archive.isUrlArchived('www.example.com').then(function (exists) {
         expect(exists).to.be.true;
         if (++counter === total) { done(); }
       });
 
-      archive.isUrlArchived('www.notarchived.com', function (exists) {
+      archive.isUrlArchived('www.notarchived.com').then(function (exists) {
         expect(exists).to.be.false;
         if (++counter === total) { done(); }
       });
@@ -155,4 +156,3 @@ describe('archive helpers', function() {
     });
   });
 });
-

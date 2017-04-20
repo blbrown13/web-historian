@@ -1,7 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
-
+var Promise = require('bluebird');
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
  * Consider using the `paths` object below to store frequently used file paths. This way,
@@ -48,25 +48,48 @@ exports.addUrlToList = function(url, callback) {
   });
 };
 
-exports.isUrlArchived = function(url, callback) {
-  fs.readdir(exports.paths.archivedSites, function(err, files){
-    callback = callback ? callback : function(exist){
-      return files.includes(url)
-    };
-    err ? (() => { throw err }) : callback(files.includes(url));
-    var output = callback(files.includes(url));
+// exports.isUrlArchived = function(url, callback) {
+//   fs.readdir(exports.paths.archivedSites, function(err, files){
+//     callback = callback ? callback : function(exist){
+//       return files.includes(url)
+//     };
+//     err ? (() => { throw err }) : callback(files.includes(url));
+//     var output = callback(files.includes(url));
+//   });
+// };
+
+
+exports.isUrlArchived = function(url) {
+   return new Promise(function(resolve, reject) {
+    fs.readdir(exports.paths.archivedSites, function(err, files){
+      if (err) { return reject(err); }
+      var hasUrl = files.includes(url);
+      resolve(hasUrl);
+    });
   });
-};
+}
 
 exports.downloadUrls = function(urls) {
   _.each(urls, function(url){
-    var hasUrl = exports.isUrlArchived(url, function(exists){
-        return exists;
+    exports.isUrlArchived(url).then(function(hasUrl){
+      if (!hasUrl) {
+        fs.writeFile(`${exports.paths.archivedSites}/${url}`, function(err, files){
+          err ? (() => { return err }) : null;
+        });
+      }
     });
-    if (!hasUrl) {
-      fs.writeFile(`${exports.paths.archivedSites}/${url}`, function(err, files){
-        err ? (() => { throw err }) : null;
-      });
-    }
   });
 };
+
+// exports.downloadUrls = function(urls) {
+//   _.each(urls, function(url){
+//     var hasUrl = exports.isUrlArchived(url, function(exists){
+//         return exists;
+//     });
+//     if (!hasUrl) {
+//       fs.writeFile(`${exports.paths.archivedSites}/${url}`, function(err, files){
+//         err ? (() => { throw err }) : null;
+//       });
+//     }
+//   });
+// };
