@@ -63,7 +63,7 @@ describe('server', function() {
         request
           .post('/')
           .type('form')
-          .send({ url: url })
+          .send(JSON.stringify(url))
           .expect(302, function (err) {
             if (!err) {
               var fileContents = fs.readFileSync(archive.paths.list, 'utf8');
@@ -115,8 +115,8 @@ describe('archive helpers', function() {
       var urlArray = ['example1.com', 'example2.com\n'];
       fs.writeFileSync(archive.paths.list, urlArray.join('\n'));
 
-      archive.addUrlToList('google.com').then(function () {
-        archive.isUrlInList('google.com').then(function (exists) {
+      archive.addUrlToList('amazon.com').then(function () {
+        archive.isUrlInList('amazon.com').then(function (exists) {
           expect(exists).to.be.true;
           done();
         });

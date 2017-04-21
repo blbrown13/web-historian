@@ -25,16 +25,6 @@ exports.initialize = function(pathsObj) {
 // The following function names are provided to you to suggest how you might
 // modularize your code. Keep it clean!
 
-// exports.readListOfUrls = function(callback) {
-//   fs.readFile(exports.paths.list, 'utf8', function (err, data) {
-//     if (err) {
-//       throw err;
-//     }
-//     var urlArray = data.split('\n');
-//     callback(urlArray);
-//   });
-// };
-
 exports.readListOfUrls = function() {
   return new Promise(function(resolve, reject) {
     fs.readFile(exports.paths.list, 'utf8', function (err, data) {
@@ -45,13 +35,7 @@ exports.readListOfUrls = function() {
   });
 };
 
-// exports.isUrlInList = function(url, callback) {
-//   exports.readListOfUrls(function(urls){
-//     callback(urls.includes(url));
-//   });
-// };
-
-exports.isUrlInList = function(url, callback) {
+exports.isUrlInList = function(url) {
   return new Promise(function(resolve, reject) {
     exports.readListOfUrls().then(function(urls){
       resolve(urls.includes(url));
@@ -59,30 +43,14 @@ exports.isUrlInList = function(url, callback) {
   });
 };
 
-// exports.addUrlToList = function(url, callback) {
-//   fs.writeFile(exports.paths.list, url, function (err, data) {
-//     err ? (() => { throw err }) : callback();
-//   });
-// };
-
-exports.addUrlToList = function(url, callback) {
+exports.addUrlToList = function(url) {
   return new Promise(function(resolve, reject) {
-    fs.writeFile(exports.paths.list, url, function (err, data) {
+    fs.appendFile(exports.paths.list, url, function (err, data) {
       if (err) { return reject(err); }
       resolve();
     });
-  })
+  });
 };
-
-// exports.addUrlToList = function(url, callback) {
-//   return new Promise(function(resolve, reject) {
-//     fs.writeFile(exports.paths.list, url, function (err, data) {
-//       if (err) { return reject(err); }
-//
-//       // err ? (() => { throw err }) : callback();
-//     });
-//   })
-// };
 
 exports.isUrlArchived = function(url) {
    return new Promise(function(resolve, reject) {
@@ -92,7 +60,7 @@ exports.isUrlArchived = function(url) {
       resolve(hasUrl);
     });
   });
-}
+};
 
 exports.downloadUrls = function(urls) {
   _.each(urls, function(url){

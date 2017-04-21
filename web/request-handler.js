@@ -28,20 +28,14 @@ exports.handleRequest = function (req, res) {
       });
     }
   } else if (req.method === 'POST') {
-    console.log(req.url);
-     archive.addUrlToList(req.url);
+    res.writeHead(302, http.headers);
+    req.on('data', function(chunk){
+      chunk = JSON.parse(chunk);
+      data = chunk.concat('\n');
+      fs.appendFile(archive.paths.list, data);
+    });
+    req.on('end', function(){
+      res.end(fs.readFile(archive.paths.list, 'utf8'));
+    });
   }
 };
-
-// var request = {method: 'GET', url: '/'};
-// handleRequest(request)
-// } else if (hasUrl) {
-//   http.serveAssets(res, `${archive.paths.archivedSites}/${req.url}`, function(data){
-//     res.writeHead(200, http.headers);
-//     res.end(data);
-//   });
-// } else {
-//   // 404
-//   res.writeHead(404, http.headers);
-//   res.end();
-// }
