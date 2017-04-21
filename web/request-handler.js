@@ -37,5 +37,8 @@ exports.handleRequest = function (req, res) {
     req.on('end', function(){
       res.end(fs.readFile(archive.paths.list, 'utf8'));
     });
+  } else {
+    res.writeHead(404, http.headers);
+    res.end();
   }
 };

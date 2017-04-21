@@ -156,3 +156,15 @@ describe('archive helpers', function() {
     });
   });
 });
+
+describe('Handling other HTTP verbs', function(){
+  it('Should 404 when use DELETE', function(done){
+    request.delete('/google.com').expect(404, done);
+  });
+  it('Should 404 when use PUT', function(done){
+    request.put('/google.com').expect(404, done);
+  });
+  it('Should 404 when use PATCH', function(done){
+    request.patch('/google.com').expect(404, done);
+  });
+});
