@@ -27,6 +27,9 @@ exports.handleRequest = function (req, res) {
         }
       });
     }
+  } else if (req.method === 'POST') {
+    console.log(req.url);
+     archive.addUrlToList(req.url);
   }
 };
 

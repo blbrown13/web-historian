@@ -83,7 +83,7 @@ describe('archive helpers', function() {
       var urlArray = ['example1.com', 'example2.com'];
       fs.writeFileSync(archive.paths.list, urlArray.join('\n'));
 
-      archive.readListOfUrls(function(urls) {
+      archive.readListOfUrls().then(function(urls) {
         expect(urls).to.deep.equal(urlArray);
         done();
       });
@@ -98,12 +98,12 @@ describe('archive helpers', function() {
       var counter = 0;
       var total = 2;
 
-      archive.isUrlInList('example1.com', function (exists) {
+      archive.isUrlInList('example1.com').then(function (exists) {
         expect(exists).to.be.true;
         if (++counter === total) { done(); }
       });
 
-      archive.isUrlInList('gibberish', function (exists) {
+      archive.isUrlInList('gibberish').then(function (exists) {
         expect(exists).to.be.false;
         if (++counter === total) { done(); }
       });
@@ -115,8 +115,8 @@ describe('archive helpers', function() {
       var urlArray = ['example1.com', 'example2.com\n'];
       fs.writeFileSync(archive.paths.list, urlArray.join('\n'));
 
-      archive.addUrlToList('someurl.com', function () {
-        archive.isUrlInList('someurl.com', function (exists) {
+      archive.addUrlToList('google.com').then(function () {
+        archive.isUrlInList('google.com').then(function (exists) {
           expect(exists).to.be.true;
           done();
         });
